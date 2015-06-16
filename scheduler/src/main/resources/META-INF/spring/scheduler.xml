@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+
+
+
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.gq.solr" />
+
+	<bean id="cronexpressionPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="order" value="1" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:cron.properties</value>
+                <!--<value>classpath:db.properties</value>-->
+			</list>
+		</property>
+	</bean>
+
+	<bean id="my1Scheduler" class="com.gq.solr.scheduler.My1Scheduler" init-method="init">
+		<property name="jobName" value="my1"></property>
+		<property name="cronExpression">
+			<value>${my1.cronexpression}</value>
+		</property>
+	</bean>
+ 
+
+	<bean id="quartz" lazy-init="false" destroy-method="destroy" class="com.gq.solr.scheduler.job.SchedulerFactory">
+		<property name="jobs">
+			<list>
+				<ref bean="my1Scheduler" />
+			</list>
+		</property>
+	</bean>
+
+   <!-- <bean id="mysqlSearch" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="url" value="${mysql.db_search.url}" />
+        <property name="username" value="${mysql.db_search.username}" />
+        <property name="password" value="${mysql.db_search.password}" />
+        <property name="maxActive" value="${mysql.db_search.maxActive}" />
+        <property name="initialSize" value="${mysql.db_search.initialSize}" />
+        <property name="maxWait" value="${mysql.db_search.maxWait}" />
+        <property name="minIdle" value="${mysql.db_search.minIdle}" />
+        <property name="timeBetweenEvictionRunsMillis" value="${mysql.db_search.timeBetweenEvictionRunsMillis}" />
+        <property name="minEvictableIdleTimeMillis" value="${mysql.db_search.minEvictableIdleTimeMillis}" />
+        <property name="validationQuery" value="${mysql.db_search.validationQuery}" />
+        <property name="testWhileIdle" value="${mysql.db_search.testWhileIdle}" />
+        <property name="testOnBorrow" value="${mysql.db_search.testOnBorrow}" />
+        <property name="testOnReturn" value="${mysql.db_search.testOnReturn}" />
+        <property name="filters" value="${mysql.db_search.filters}" />
+    </bean>
+
+    <bean id="jdbcSearch" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource">
+            <ref bean="mysqlSearch" />
+        </property>
+    </bean>-->
+
+</beans>
