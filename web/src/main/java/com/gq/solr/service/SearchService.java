@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-/**
- * AnnouncementSearchService接口的实现类,提供招标预告搜索相关服务
- * @author ganq
- *
- */
+
 @Service("searchService")
 public class SearchService {
 
@@ -31,6 +28,9 @@ public class SearchService {
 		
 		
 		Map<String,Object> resultMap = new HashMap<String, Object>();
+
+		List a;
+		resultMap.put(null,null);
 /*
 
 		//dos 作为字段查询

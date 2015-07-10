@@ -16,7 +16,7 @@ public class My1SchedulerTest extends BaseTestCase {
 	
 	@Test
 	public void testSolrScheduler() {
-		my1Scheduler.setDebug(true);
+		//my1Scheduler.setDebug(true);
 		my1Scheduler.run();
 		Assert.assertTrue(true);
 	}

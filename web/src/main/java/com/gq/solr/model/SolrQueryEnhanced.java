@@ -4,9 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
@@ -26,7 +27,15 @@ public class SolrQueryEnhanced {
 
 	private Integer maxRetries;
 
-	private HttpSolrServer solrServer = null;
+	private HttpSolrClient httpSolrClient = null;
+
+	public HttpSolrClient getHttpSolrClient() {
+		return httpSolrClient;
+	}
+
+	public void setHttpSolrClient(HttpSolrClient httpSolrClient) {
+		this.httpSolrClient = httpSolrClient;
+	}
 
 	public SolrQueryEnhanced() {
 	}
@@ -38,14 +47,14 @@ public class SolrQueryEnhanced {
 	 */
 	public void init() throws MalformedURLException {
 
-		solrServer = new HttpSolrServer(url);
-		solrServer.setSoTimeout(soTimeOut);
-		solrServer.setConnectionTimeout(connectionTimeOut);
-		solrServer.setDefaultMaxConnectionsPerHost(maxConnectionsPerHost);
-		solrServer.setMaxTotalConnections(maxTotalConnections);
-		solrServer.setFollowRedirects(false);
-		solrServer.setAllowCompression(true);
-		solrServer.setMaxRetries(maxRetries);
+		httpSolrClient = new HttpSolrClient(url);
+		httpSolrClient.setSoTimeout(soTimeOut);
+		httpSolrClient.setConnectionTimeout(connectionTimeOut);
+		httpSolrClient.setDefaultMaxConnectionsPerHost(maxConnectionsPerHost);
+		httpSolrClient.setMaxTotalConnections(maxTotalConnections);
+		httpSolrClient.setFollowRedirects(false);
+		httpSolrClient.setAllowCompression(true);
+		//httpSolrClient.setMaxRetries(maxRetries);
 	}
 
 	/**
@@ -128,22 +137,15 @@ public class SolrQueryEnhanced {
 		if (pageSize >= 0) {
 			query.setRows(Integer.parseInt(String.valueOf(pageSize)));
 		}
-        return solrServer.query(query);
+		try {
+			return httpSolrClient.query(query);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	/*public SolrDocumentList queryDocumentList(List<SolrQueryBO> dos, int startIndex, int pageSize)
-			throws SolrServerException {
 
-		SolrDocumentList docs = query(dos, startIndex, pageSize).getResults();
-		return docs;
-	}*/
-
-	/*public List<FacetField> queryFacetFieldList(List<SolrQueryBO> dos, int startIndex, int pageSize)
-			throws SolrServerException {
-
-		List<FacetField> ffl = query(dos, startIndex, pageSize).getFacetFields();
-		return ffl;
-	}*/
 
 	public String getUrl() {
 		return url;
@@ -193,12 +195,5 @@ public class SolrQueryEnhanced {
 		this.maxRetries = maxRetries;
 	}
 
-	public HttpSolrServer getSolrServer() {
-		return solrServer;
-	}
-
-	public void setSolrServer(HttpSolrServer solrServer) {
-		this.solrServer = solrServer;
-	}
 
 }

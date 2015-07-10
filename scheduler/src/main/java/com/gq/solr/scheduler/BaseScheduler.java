@@ -66,6 +66,7 @@ public abstract class BaseScheduler extends MyJob {
 
         solrClient.addBeans(indexList);
         solrClient.commit();
+        solrClient.optimize();
 
         logger.info("成功更新" + getJobName() + "索引" + getJobName() + indexList.size() + "条数据！！！");
 
